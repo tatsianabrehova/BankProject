@@ -1,6 +1,10 @@
 package guis;
+import db_objs.MyJDBC;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegisterGui extends BaseFrame{
     public RegisterGui(){
@@ -50,6 +54,28 @@ public class RegisterGui extends BaseFrame{
         JButton registerButton= new JButton("Register");
         registerButton.setBounds(20,460,getWidth()-50,40);
         registerButton.setFont(new Font("Dialog", Font.BOLD,20));
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String username=usernamefield.getText();
+                String password=String.valueOf(passwordfield.getPassword());
+                String REPassword=String.valueOf(REpasswordfield.getPassword());
+
+                if(validateUserInput(username,password,REPassword)){
+                    if(MyJDBC.register(username,password)){
+                        RegisterGui.this.dispose();
+                        LoginGui loginGui=new LoginGui();
+                        loginGui.setVisible(true);
+
+                        JOptionPane.showMessageDialog(loginGui,"Registered Account Successfuly!");
+                    }else{
+                        JOptionPane.showMessageDialog(RegisterGui.this,"Error: Username already taken");
+                    }
+                } else{
+                    JOptionPane.showMessageDialog(RegisterGui.this,"Error: Username must be at least 6 characters\n"+"and/or Password must match");
+                }
+            }
+        });
         add(registerButton);
 
         //login label
@@ -58,5 +84,12 @@ public class RegisterGui extends BaseFrame{
         loginLabel.setFont(new Font("Dialog", Font.PLAIN,20));
         loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(loginLabel);
+    }
+    private boolean validateUserInput(String username,String password,String REPassword){
+        if(username.length()==0||password.length()==0||REPassword.length()==0) return false;
+        if(username.length()<6) return false;
+        if(!password.equals(REPassword)) return false;
+
+        return false;
     }
 }
