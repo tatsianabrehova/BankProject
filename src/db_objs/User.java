@@ -27,7 +27,7 @@ public class User {
         return currentBalance;
     }
 
-    public void SetCurrentBalance(BigDecimal newBalance){
+    public void setCurrentBalance(BigDecimal newBalance){
         currentBalance=newBalance.setScale(2, RoundingMode.FLOOR);
     }
 }
