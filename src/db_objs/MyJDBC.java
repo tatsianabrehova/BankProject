@@ -81,7 +81,7 @@ return true;}
          Connection connection=DriverManager.getConnection((DB_URL,DB_USERNAME,DB_PASSWORD));
 
          PreparedStatement updateBalance= connection.prepareStatement(
-                 "UPDATE users SET current_balance=? WHERE id=?"
+                 "UPDATE users SET current_balance = ? WHERE id = ?"
          );
 
          updateBalance.setBigDecimal(1,user.getCurrentBalance());
