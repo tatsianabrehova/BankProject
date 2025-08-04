@@ -99,11 +99,26 @@ private void resetFieldsAndUpdateCurrentBalance(){
 
         bankingAppGui.getCurrentBalanceField().setText("$"+user.getCurrentBalance());
 }
+private void handleTransfer(User user,String transferredUser,float amount){if(MyJDBC.transfer(user,transferredUser,amount)){JOptionPane.showMessageDialog(this,"Transfer Success!");}}
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String buttonPressed=e.getActionCommand();
         float amountVal=Float.parseFloat(enterAmountField.getText());
-        if(buttonPressed.equalsIgnoreCase("Deposit")){handleTransaction(buttonPressed,amountVal);
+        if(buttonPressed.equalsIgnoreCase("Deposit")){
+            handleTransaction(buttonPressed,amountVal);
+        }else{
+            int result= user.getCurrentBalance().compareTo(BigDecimal.valueOf(amountVal));
+            if(result<0){
+                JOptionPane.showMessageDialog(this,"Error: Input value is more than current balance");
+                return;
+            }
+
+            if(buttonPressed.equalsIgnoreCase("Withdraw")){
+                handleTransaction(buttonPressed,amountVal);
+            }else{
+                String transferredUser= enterUserField.getText();
+            }
         }
     }
 }

@@ -30,10 +30,10 @@ public class MyJDBC {
 public static boolean register(String username,String password){
         try{
             Connection connection= DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
-            PreparedStatement preparedStatement=connection.prepareStatement("INSERT*INTO users(username,password,current_balance)"+"VALUES(?,?,?)");
+            PreparedStatement preparedStatement=connection.prepareStatement("INSERT INTO users(username,password,current_balance)"+"VALUES(?,?,?)");
             preparedStatement.setString(1,username);
             preparedStatement.setString(2,password);
-            preparedStatement.setBigDecimal(3,new BigDecimal("0"));
+            preparedStatement.setBigDecimal(3,BigDecimal.ZERO);
            preparedStatement.executeUpdate();
             //insertTransaction.executeUpdate();
 return true;
@@ -92,6 +92,49 @@ return true;}
 
          updateBalance.executeUpdate();
          return true;
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public static boolean transfer(User user,String transferredUsername, float transferAmount){
+        try{
+            Connection connection=DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
+
+            PreparedStatement queryUser=connection.prepareStatement("SELECT*FROM users WHERE username = ?");
+
+            queryUser.setString(1,transferredUsername);
+
+            ResultSet resultSet=queryUser.executeQuery();
+
+            while(resultSet.next()){
+                User transferredUser=new User(
+                        resultSet.getInt("id"),
+                        transferredUsername,
+                        resultSet.getString("password"),
+                        resultSet.getBigDecimal("current_balance")
+                );
+                Transaction transferTransaction=new Transaction(
+                        user.getId(),"Transfer",new BigDecimal(-transferAmount),null);
+                Transaction receivedTransaction= new Transaction(
+                        transferredUser.getId(),
+                        "Transfer",
+                        new BigDecimal(transferAmount),
+                        null);
+
+                transferredUser.setCurrentBalance(transferredUser.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
+                updateCurrentBalance(transferredUser);
+
+                user.setCurrentBalance(user.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
+                updateCurrentBalance(user);
+
+                addTransactionToDb(transferTransaction);
+                addTransactionToDb(receivedTransaction);
+
+                return true;
+            }
         }catch(SQLException e){
             e.printStackTrace();
         }

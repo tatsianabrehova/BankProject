@@ -99,6 +99,6 @@ public class RegisterGui extends BaseFrame{
         if(username.length()<6) return false;
         if(!password.equals(REPassword)) return false;
 
-        return false;
+        return true;
     }
 }
