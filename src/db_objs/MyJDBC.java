@@ -14,6 +14,7 @@ public class MyJDBC {
             PreparedStatement preparedStatement=connection.prepareStatement("SElECT*FROM users WHERE `username` = ? AND `password` =?");
             preparedStatement.setString(1,username);
             preparedStatement.setString(2,password);
+
             ResultSet resultSet=preparedStatement.executeQuery();
 
             if(resultSet.next()){
@@ -29,10 +30,12 @@ public class MyJDBC {
 public static boolean register(String username,String password){
         try{
             Connection connection= DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
-            PreparedStatement preparedStatement=connection.prepareStatement("INSERT*INTO users(username,password)"+"VALUES(?,?)");
+            PreparedStatement preparedStatement=connection.prepareStatement("INSERT*INTO users(username,password,current_balance)"+"VALUES(?,?,?)");
             preparedStatement.setString(1,username);
             preparedStatement.setString(2,password);
+            preparedStatement.setBigDecimal(3,new BigDecimal("0"));
            preparedStatement.executeUpdate();
+            //insertTransaction.executeUpdate();
 return true;
 
 
@@ -61,7 +64,7 @@ return true;}
             Connection connection =DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
             PreparedStatement insertTransaction=connection.prepareStatement(
                     "INSERT transactions(user_id,transaction_type,transaction_amount,transaction_date)"+
-                            "VALUES(?,?,?,NOW()"
+                            "VALUES(?,?,?,NOW())"
             );
 
             insertTransaction.setInt(1,transaction.getUserId());
@@ -76,9 +79,9 @@ return true;}
     }
 
 
-    public static boolean updateCurrentBalabce(User user){
+    public static boolean updateCurrentBalance(User user){
         try{
-         Connection connection=DriverManager.getConnection((DB_URL,DB_USERNAME,DB_PASSWORD));
+         Connection connection=DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
 
          PreparedStatement updateBalance= connection.prepareStatement(
                  "UPDATE users SET current_balance = ? WHERE id = ?"
@@ -92,5 +95,6 @@ return true;}
         }catch(SQLException e){
             e.printStackTrace();
         }
+        return false;
     }
 }

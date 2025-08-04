@@ -1,4 +1,5 @@
 package guis;
+import db_objs.MyJDBC;
 import db_objs.Transaction;
 import db_objs.User;
 
@@ -47,6 +48,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         actionButton=new JButton(actionButtonType);
         actionButton.setBounds(15,300,getWidth()-50,40);
         actionButton.setFont(new Font("Dialog", Font.BOLD,20));
+        actionButton.addActionListener(this);
         add(actionButton);
     }
 
@@ -73,19 +75,35 @@ private void handleTransaction(String transactionType,float amountVal){
     }else{
         user.setCurrentBalance(user.getCurrentBalance().subtract(new BigDecimal(amountVal)));
 
-        transaction=new Transaction(user.getId(),transactionType,new BigDecimal(amountVal),null);
+        transaction=new Transaction(user.getId(),transactionType,new BigDecimal(-amountVal),null);
     }
 
     //обновить бд
+if(MyJDBC.addTransactionToDb(transaction)&&MyJDBC.updateCurrentBalance(user)){
+    JOptionPane.showMessageDialog(this,transactionType+"Successfully");
+    resetFieldsAndUpdateCurrentBalance();
+}else{
+    JOptionPane.showMessageDialog(this,transactionType+"Failed...");
+}
 
+}
 
+private void resetFieldsAndUpdateCurrentBalance(){
+        enterAmountField.setText("");
+
+        if(enterUserField!=null){
+            enterUserField.setText("");
+        }
+
+        balanceLabel.setText("Balance: $"+user.getCurrentBalance());
+
+        bankingAppGui.getCurrentBalanceField().setText("$"+user.getCurrentBalance());
 }
     @Override
     public void actionPerformed(ActionEvent e) {
         String buttonPressed=e.getActionCommand();
         float amountVal=Float.parseFloat(enterAmountField.getText());
-        if(buttonPressed.equalsIgnoreCase("Deposit")){
-
+        if(buttonPressed.equalsIgnoreCase("Deposit")){handleTransaction(buttonPressed,amountVal);
         }
     }
 }
