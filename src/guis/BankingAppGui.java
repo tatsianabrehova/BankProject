@@ -95,7 +95,6 @@ String welcomeMessage="<html>"+"<body style='text-align:center'>"+"<b>Hello"+use
                         if(buttonPressed.equalsIgnoreCase("Transfer")){
                                 bankingAppDialog.addUserField();
                         }
-                        bankingAppDialog.setVisible(true);
                 } else if (buttonPressed.equalsIgnoreCase("Past Transaction")) {
 bankingAppDialog.addPastTransactionComponents();
                 }

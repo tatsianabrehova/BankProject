@@ -74,7 +74,7 @@ pastTransactionPanel= new JPanel(); pastTransactionPanel.setLayout(new BoxLayout
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBounds( 0, 20,  getWidth()-15,  getHeight()-15);pastTransactions = MyJDBC.getPastTransaction(user);
         for(int i = 0; i < pastTransactions.size(); i++){
-            Transaction pastTransaction = pastTransactions.get (1);
+            Transaction pastTransaction = pastTransactions.get (i);
 // create a container to store an individual transaction
             JPanel pastTransactionContainer = new JPanel();
             pastTransactionContainer.setLayout(new BorderLayout());
@@ -89,9 +89,9 @@ pastTransactionPanel= new JPanel(); pastTransactionPanel.setLayout(new BoxLayout
             pastTransactionContainer.add(transactionAmountLabel, BorderLayout.EAST);
             pastTransactionContainer.add(transactionDateLabel, BorderLayout.SOUTH);
 // give a white background to each container
-            pastTransactionContainer. setBackground(Color.WHITE);
+            pastTransactionContainer. setBackground(Color.WHITE);pastTransactionContainer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 // add transaction component to the transaction panel
-            pastTransactionPanel. add (pastTransactionPanel);}
+            pastTransactionPanel. add (pastTransactionContainer);}
 // add to the dialog
         add(scrollPane);}
 private void handleTransaction(String transactionType,float amountVal){
