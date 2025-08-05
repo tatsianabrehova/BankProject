@@ -8,13 +8,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class BankingAppDialog extends JDialog implements ActionListener {
     private User user;
     private  BankingAppGui bankingAppGui;
     private JLabel balanceLabel, enterAmountLabel, enterUserLabel;
     public JTextField enterAmountField, enterUserField;
-    private JButton actionButton;
+    private JButton actionButton; private JPanel pastTransactionPanel; private ArrayList<Transaction> pastTransactions;
     public BankingAppDialog(BankingAppGui bankingAppGui,User user){
         setSize(400,400);
         setModal(true);
@@ -65,7 +66,34 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         enterUserField.setHorizontalAlignment(SwingConstants.CENTER);
         add(enterUserField);
 
-    }
+    }public void addPastTransactionComponents(){
+pastTransactionPanel= new JPanel(); pastTransactionPanel.setLayout(new BoxLayout(pastTransactionPanel,BoxLayout.Y_AXIS));
+        JScrollPane scrollPane
+                = new JScrollPane(pastTransactionPanel);
+// displays the vertical scroll only when it is required
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBounds( 0, 20,  getWidth()-15,  getHeight()-15);pastTransactions = MyJDBC.getPastTransaction(user);
+        for(int i = 0; i < pastTransactions.size(); i++){
+            Transaction pastTransaction = pastTransactions.get (1);
+// create a container to store an individual transaction
+            JPanel pastTransactionContainer = new JPanel();
+            pastTransactionContainer.setLayout(new BorderLayout());
+            JLabel transactionTypeLabel = new JLabel (pastTransaction.getTransactionType());
+            transactionTypeLabel.setFont(new Font ( "Dialog", Font. BOLD,20));
+// create transaction amount label
+            JLabel transactionAmountLabel = new JLabel (String.valueOf(pastTransaction.getTransactionAmount()));
+            transactionAmountLabel.setFont(new Font(  "Dialog", Font.BOLD,  20));
+// create transaction date Label
+            JLabel transactionDateLabel= new JLabel (String.valueOf(pastTransaction.getTransactionDate()));
+            transactionDateLabel. setFont(new Font ( "Dialog", Font.BOLD,20));pastTransactionContainer.add(transactionTypeLabel, BorderLayout.WEST);
+            pastTransactionContainer.add(transactionAmountLabel, BorderLayout.EAST);
+            pastTransactionContainer.add(transactionDateLabel, BorderLayout.SOUTH);
+// give a white background to each container
+            pastTransactionContainer. setBackground(Color.WHITE);
+// add transaction component to the transaction panel
+            pastTransactionPanel. add (pastTransactionPanel);}
+// add to the dialog
+        add(scrollPane);}
 private void handleTransaction(String transactionType,float amountVal){
     Transaction transaction;
 
@@ -118,7 +146,7 @@ private void handleTransfer(User user,String transferredUser,float amount){if(My
                 handleTransaction(buttonPressed,amountVal);
             }else{
                 String transferredUser= enterUserField.getText();
-            }
+handleTransfer(user,transferredUser, amountVal);
         }
     }
-}
+}}

@@ -96,6 +96,9 @@ String welcomeMessage="<html>"+"<body style='text-align:center'>"+"<b>Hello"+use
                                 bankingAppDialog.addUserField();
                         }
                         bankingAppDialog.setVisible(true);
+                } else if (buttonPressed.equalsIgnoreCase("Past Transaction")) {
+bankingAppDialog.addPastTransactionComponents();
                 }
+                bankingAppDialog.setVisible(true);
         }
 }

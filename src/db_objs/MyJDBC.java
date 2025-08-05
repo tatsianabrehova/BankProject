@@ -2,6 +2,7 @@ package db_objs;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class MyJDBC {
     private static final String DB_URL="jdbc:mysql://127.0.0.1:3306/bankapp";
@@ -70,6 +71,7 @@ return true;}
             insertTransaction.setInt(1,transaction.getUserId());
             insertTransaction.setString(2,transaction.getTransactionType());
             insertTransaction.setBigDecimal(3,transaction.getTransactionAmount());
+            insertTransaction.executeUpdate();
             return true;
 
         }catch(SQLException e){
@@ -127,7 +129,7 @@ return true;}
                 transferredUser.setCurrentBalance(transferredUser.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
                 updateCurrentBalance(transferredUser);
 
-                user.setCurrentBalance(user.getCurrentBalance().add(BigDecimal.valueOf(transferAmount)));
+                user.setCurrentBalance(user.getCurrentBalance().subtract(BigDecimal.valueOf(transferAmount)));
                 updateCurrentBalance(user);
 
                 addTransactionToDb(transferTransaction);
@@ -140,4 +142,26 @@ return true;}
         }
         return false;
     }
-}
+    // get all transactions (used for past transaction)
+    public static ArrayList<Transaction> getPastTransaction(User user){
+    ArrayList<Transaction> pastTransactions = new ArrayList<>();
+    try{
+    Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+    PreparedStatement selectAllTransaction = connection.prepareStatement(
+            "SELECT * FROM transactions WHERE user_id = ?"
+            );
+    selectAllTransaction.setInt (1, user.getId());
+    ResultSet resultSet = selectAllTransaction.executeQuery();
+    // iterate anyway
+    while(resultSet.next()) {
+        Transaction transaction = new Transaction(
+                user.getId(),
+                resultSet.getString("transaction_type"),
+                resultSet.getBigDecimal("transaction_amount"),
+                resultSet.getDate("transaction_date"));
+        pastTransactions.add(transaction);
+    }
+}catch (SQLException e){
+        e.printStackTrace();
+}return pastTransactions;
+    }}
