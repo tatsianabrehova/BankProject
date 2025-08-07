@@ -56,10 +56,9 @@ public class RegisterGui extends BaseFrame{
         JButton registerButton= new JButton("Register");
         registerButton.setBounds(20,460,getWidth()-50,40);
         registerButton.setFont(new Font("Dialog", Font.BOLD,20));
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                String username=usernamefield.getText();
+
+        registerButton.addActionListener(e -> {
+            String username=usernamefield.getText();
                 String password=String.valueOf(passwordfield.getPassword());
                 String REPassword=String.valueOf(REpasswordfield.getPassword());
 
@@ -77,7 +76,7 @@ public class RegisterGui extends BaseFrame{
                     JOptionPane.showMessageDialog(RegisterGui.this,"Error: Username must be at least 6 characters\n"+"and/or Password must match");
 
             }}
-        });
+        );
         add(registerButton);
 
         //login label
