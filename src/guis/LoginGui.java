@@ -46,9 +46,7 @@ public class LoginGui extends BaseFrame{
         JButton loginButton= new JButton("Login");
         loginButton.setBounds(20,460,getWidth()-50,40);
         loginButton.setFont(new Font("Dialog", Font.BOLD,20));
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        loginButton.addActionListener(e->{
                 String username=usernamefield.getText();
                 String password=String.valueOf(passwordfield.getPassword());
                 User user= MyJDBC.validateLogin(username,password);
@@ -66,7 +64,7 @@ public class LoginGui extends BaseFrame{
                 }
 
             }
-        });
+        );
         add(loginButton);
 //set the listener
 
