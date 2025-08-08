@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-public class BankingAppDialog extends JDialog {
+public class BankingAppDialog extends JDialog implements ActionListener {
     private User user;
     private  BankingAppGui bankingAppGui;
     private JLabel balanceLabel, enterAmountLabel, enterUserLabel;
@@ -49,31 +49,9 @@ public class BankingAppDialog extends JDialog {
         actionButton=new JButton(actionButtonType);
         actionButton.setBounds(15,300,getWidth()-50,40);
         actionButton.setFont(new Font("Dialog", Font.BOLD,20));
-
-            actionButton.addActionListener(e -> {
-                String buttonPressed=e.getActionCommand();
-                float amountVal=Float.parseFloat(enterAmountField.getText());
-                if(buttonPressed.equalsIgnoreCase("Deposit")){
-                    handleTransaction(buttonPressed,amountVal);
-                }else{
-                    int result= user.getCurrentBalance().compareTo(BigDecimal.valueOf(amountVal));
-                    if(result<0){
-                        JOptionPane.showMessageDialog(this,"Error: Input value is more than current balance");
-                        return;
-                    }
-
-                    if(buttonPressed.equalsIgnoreCase("Withdraw")){
-                        handleTransaction(buttonPressed,amountVal);
-                    }else{
-                        String transferredUser= enterUserField.getText();
-                        handleTransfer(user,transferredUser, amountVal);
-                    }
-                }
-            });
-
-            add(actionButton);
-        }
-
+        actionButton.addActionListener(this);
+        add(actionButton);
+    }
 
     public void addUserField(){
         enterUserLabel= new JLabel("Enter User:");
@@ -88,9 +66,7 @@ public class BankingAppDialog extends JDialog {
         enterUserField.setHorizontalAlignment(SwingConstants.CENTER);
         add(enterUserField);
 
-    }
-
-    public void addPastTransactionComponents(){
+    }public void addPastTransactionComponents(){
 pastTransactionPanel= new JPanel(); pastTransactionPanel.setLayout(new BoxLayout(pastTransactionPanel,BoxLayout.Y_AXIS));
         JScrollPane scrollPane
                 = new JScrollPane(pastTransactionPanel);
@@ -151,9 +127,26 @@ private void resetFieldsAndUpdateCurrentBalance(){
 
         bankingAppGui.getCurrentBalanceField().setText("$"+user.getCurrentBalance());
 }
-private void handleTransfer(User user,String transferredUser,float amount){
-        if(MyJDBC.transfer(user,transferredUser,amount)){
-            JOptionPane.showMessageDialog(this,"Transfer Success!");}
-    }
+private void handleTransfer(User user,String transferredUser,float amount){if(MyJDBC.transfer(user,transferredUser,amount)){JOptionPane.showMessageDialog(this,"Transfer Success!");}}
 
-   }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String buttonPressed=e.getActionCommand();
+        float amountVal=Float.parseFloat(enterAmountField.getText());
+        if(buttonPressed.equalsIgnoreCase("Deposit")){
+            handleTransaction(buttonPressed,amountVal);
+        }else{
+            int result= user.getCurrentBalance().compareTo(BigDecimal.valueOf(amountVal));
+            if(result<0){
+                JOptionPane.showMessageDialog(this,"Error: Input value is more than current balance");
+                return;
+            }
+
+            if(buttonPressed.equalsIgnoreCase("Withdraw")){
+                handleTransaction(buttonPressed,amountVal);
+            }else{
+                String transferredUser= enterUserField.getText();
+handleTransfer(user,transferredUser, amountVal);
+        }
+    }
+}}
