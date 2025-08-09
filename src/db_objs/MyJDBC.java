@@ -5,9 +5,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class MyJDBC {
-    private static final String DB_URL="jdbc:mysql://127.0.0.1:3306/bankapp";
-    public static final String DB_USERNAME="root";
-    private static final String DB_PASSWORD="tanyabrehova2004";
+
+    private static final String DB_URL = System.getenv("DB_URL");
+    private static final String DB_USERNAME = System.getenv("DB_USERNAME");
+    private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     public static User validateLogin(String username,String password){
         try{
